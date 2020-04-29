@@ -1,4 +1,5 @@
-import originJsonp from 'jsonp'
+//package的属性dependencies里要有("jsonp": "0.2.1"),然后这里引入
+import originJsonp from 'jsonp' 
 
 export default function jsonp(url, data, option) {
     url += (url.indexOf('?') < 0 ? '?' : '&') + param(data)
