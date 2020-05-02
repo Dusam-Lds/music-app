@@ -2,7 +2,13 @@
   <div class="recommend">
     <div class="recommend-content">
       <div class="slider-wrapper">
-
+        <slider>
+            <div v-for="(item,index) in recommends" :key="index">
+              <a :href="item.linkUrl">
+                <img class="needsclick" @load="loadImage" :src="item.picUrl">
+              </a>
+            </div>
+          </slider>
       </div>
       <div class="recommend-list">
         <h1 class="list-title">热门歌单推荐</h1>
@@ -15,9 +21,29 @@
 </template>
 
 <script type="text">
+import Slider from 'base/slider/slider';
 import {getRecommend} from 'api/recommend'
 import {ERR_OK} from 'api/config'
 export default {
+  props: {
+    Slider,
+  },
+  data() {
+    return {
+      recommends: [
+        {
+          linkUrl: '',
+          picUrl: 'http://p1.music.126.net/43-rrmmQhBPlS3UIu56t1A==/109951164955417555.jpg?imageView&quality=89'
+        },{
+          linkUrl: '',
+          picUrl: 'http://p1.music.126.net/dwxGxPb9XPd3PnutAOgk2w==/109951164955466538.jpg?imageView&quality=89'
+        },{
+          linkUrl: '',
+          picUrl: 'http://p1.music.126.net/QU37G-7IgHXwD9-lqOv8aw==/109951164955495523.jpg?imageView&quality=89'
+        }
+      ]
+    }
+  },
   created() {
     this._getRecommend()
   },
@@ -25,7 +51,7 @@ export default {
     _getRecommend() {
       getRecommend().then(res => {
         if(res.code === ERR_OK) {
-          console.log(res)
+          this.recommends = res.data.slider
         }
       }).catch(err => {
         console.log(err,1111)
