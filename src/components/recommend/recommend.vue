@@ -1,11 +1,11 @@
 <template>
   <div class="recommend">
     <div class="recommend-content">
-      <div class="slider-wrapper">
+      <div class="slider-wrapper" v-if="recommends.length">
         <slider>
             <div v-for="(item,index) in recommends" :key="index">
               <a :href="item.linkUrl">
-                <img class="needsclick" @load="loadImage" :src="item.picUrl">
+                <img class="needsclick" :src="item.picUrl">
               </a>
             </div>
           </slider>
@@ -25,7 +25,7 @@ import Slider from 'base/slider/slider';
 import {getRecommend} from 'api/recommend'
 import {ERR_OK} from 'api/config'
 export default {
-  props: {
+  components: {
     Slider,
   },
   data() {

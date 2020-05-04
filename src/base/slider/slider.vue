@@ -9,8 +9,71 @@
   </div>
 </template>
 
-<script type="text/ecmascript-6">
+<script type="text">
+import {addClass} from 'common/js/dom'
+import BScroll from 'better-scroll'
+export default {
+   props: {
+      //  循环
+      loop: {
+        type: Boolean,
+        default: true
+      },
+      // 自动
+      autoPlay: {
+        type: Boolean,
+        default: true
+      },
+      // 间隔时间
+      interval: {
+        type: Number,
+        default: 4000
+      }
+    },
+    mounted() {
+      setTimeout(() => {
+        this._setSliderWidth();
+        this._initSlider();
+      }, 20) // 浏览器的刷新通常是17毫秒一次
+    },
+    methods: {
+      _setSliderWidth() {
+        console.log(this.children,111);
 
+        this.children = this.$refs.sliderGroup.children
+
+        let sliderWidth = this.$refs.slider.clientWidth
+        let width = 0
+        for (let i = 0; i < this.children.length; i++) {
+          let child = this.children[i];
+          addClass(child, 'slider-item')
+
+          child.style.width = sliderWidth + 'px'
+          width += sliderWidth
+        }
+        
+        if(this.loop) {
+          width += 2 * sliderWidth
+        }
+
+        this.$refs.sliderGroup.style.width = width + 'px'
+        
+      },
+      // 初始化
+      _initSlider() {
+         this.slider = new BScroll(this.$refs.slider, {
+          scrollX: true, // 横滚
+          scrollY: false,
+          momentum: false,  // 惯性
+          snap: true,
+          snapLoop: this.loop,
+          snapThreshold: 0.3,
+          snapSpeed: 400,
+          click: true // 启用点击行为
+        })
+      }
+    }
+}
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
