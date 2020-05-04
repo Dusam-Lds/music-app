@@ -43,6 +43,8 @@ export default {
         // 初始化轮播图之前调用（未拷贝子元素，确保元素与索引长度一致）
         this._initDots();
         this._initSlider();
+        // 自动轮播
+        this._pay();
       }, 20) // 浏览器的刷新通常是17毫秒一次
     },
     methods: {
@@ -88,10 +90,27 @@ export default {
             pageIndex -= 1
           }
           this.currentPageIndex = pageIndex 
+
+          if(this.autoPlay) {
+            clearTimeout(this.timer)
+            this._pay()
+          }
         })
       },
       _initDots() {
         this.dots = new Array(this.children.length)
+      },
+      _pay() {
+        // 展示是从第一个索引开始的（因初始化拷贝了两个子元素）
+        let pageIndex = this.currentPageIndex + 1;
+        if(this.loop) {
+          pageIndex += 1
+        }
+
+        this.timer = setTimeout(() => {
+          //pageIndex:横向滚动  0: 纵向滚动（设置为0就可以）
+           this.slider.goToPage(pageIndex, 0, 400)
+        },this.interval)
       }
     }
 }
