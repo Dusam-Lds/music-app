@@ -5,6 +5,7 @@
       </slot>
     </div>
     <div class="dots">
+        <span class="dot" :class="{active: currentPageIndex === index }" v-for="(item, index) in dots" :key="index"></span>
     </div>
   </div>
 </template>
@@ -13,7 +14,7 @@
 import {addClass} from 'common/js/dom'
 import BScroll from 'better-scroll'
 export default {
-   props: {
+    props: {
       //  循环
       loop: {
         type: Boolean,
@@ -30,15 +31,22 @@ export default {
         default: 4000
       }
     },
+    data() {
+      return {
+        currentPageIndex: 0,
+        dots: []
+      }
+    },
     mounted() {
       setTimeout(() => {
         this._setSliderWidth();
+        // 初始化轮播图之前调用（未拷贝子元素，确保元素与索引长度一致）
+        this._initDots();
         this._initSlider();
       }, 20) // 浏览器的刷新通常是17毫秒一次
     },
     methods: {
       _setSliderWidth() {
-        console.log(this.children,111);
 
         this.children = this.$refs.sliderGroup.children
 
@@ -61,6 +69,7 @@ export default {
       },
       // 初始化
       _initSlider() {
+        // BScroll初始化之后会自动拷贝两分子元素，以便作循环滚动（所以初始化索引要在它之前，才不会多出两个拷贝的索引）
          this.slider = new BScroll(this.$refs.slider, {
           scrollX: true, // 横滚
           scrollY: false,
@@ -69,8 +78,20 @@ export default {
           snapLoop: this.loop,
           snapThreshold: 0.3,
           snapSpeed: 400,
-          click: true // 启用点击行为
         })
+
+        // 滚动完毕
+        this.slider.on('scrollEnd', () => {
+          let pageIndex = this.slider.getCurrentPage().pageX
+          // 如是循环状态，要减掉前面拷贝的索引
+          if(this.loop) {
+            pageIndex -= 1
+          }
+          this.currentPageIndex = pageIndex 
+        })
+      },
+      _initDots() {
+        this.dots = new Array(this.children.length)
       }
     }
 }
