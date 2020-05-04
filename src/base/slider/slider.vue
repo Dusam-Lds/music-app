@@ -46,9 +46,20 @@ export default {
         // 自动轮播
         this._pay();
       }, 20) // 浏览器的刷新通常是17毫秒一次
+
+      // 监听窗口改变事件
+      window.addEventListener('resize', () => {
+        // 如果还没有初始化
+        if (!this.slider) {
+          return
+        }
+        this._setSliderWidth(true)
+        // 窗口发生变化，重新计算
+        this.slider.refresh()
+      })
     },
     methods: {
-      _setSliderWidth() {
+      _setSliderWidth(isResize) {
 
         this.children = this.$refs.sliderGroup.children
 
@@ -62,7 +73,8 @@ export default {
           width += sliderWidth
         }
         
-        if(this.loop) {
+        // 只有初始化的时候才需要*2倍的宽度，窗口变化时不需要
+        if(this.loop && !isResize) {
           width += 2 * sliderWidth
         }
 
@@ -80,6 +92,7 @@ export default {
           snapLoop: this.loop,
           snapThreshold: 0.3,
           snapSpeed: 400,
+           // click: true  会阻止浏览器默认的click，然后派发自己的click，移动端下会跟fastClick冲突(去掉就可以了)，a链接是默认行为，不需要监听click
         })
 
         // 滚动完毕
