@@ -58,6 +58,10 @@ export default {
         this.slider.refresh()
       })
     },
+    // 销毁组件，清理定时器，有利于内存的释放
+    destroyed() {
+      clearTimeout(this.timer)
+    },
     methods: {
       _setSliderWidth(isResize) {
 
