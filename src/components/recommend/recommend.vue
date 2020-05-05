@@ -13,8 +13,16 @@
       <div class="recommend-list">
         <h1 class="list-title">热门歌单推荐</h1>
         <ul>
-
-        </ul>
+            <li @click="selectItem(item)" v-for="(item,index) in discList" :key="index" class="item">
+              <div class="icon">
+                <img width="60" height="60" :src="item.imgurl">
+              </div>
+              <div class="text">
+                <h2 class="name" v-html="item.creator.name"></h2>
+                <p class="desc" v-html="item.dissname"></p>
+              </div>
+            </li>
+          </ul>
       </div>
     </div>
   </div>
@@ -22,7 +30,7 @@
 
 <script type="text">
 import Slider from 'base/slider/slider';
-import {getRecommend} from 'api/recommend'
+import {getRecommend, getDiscList} from 'api/recommend'
 import {ERR_OK} from 'api/config'
 export default {
   components: {
@@ -41,11 +49,13 @@ export default {
           linkUrl: '',
           picUrl: 'http://p1.music.126.net/QU37G-7IgHXwD9-lqOv8aw==/109951164955495523.jpg?imageView&quality=89'
         }
-      ]
+      ],
+      discList: []
     }
   },
   created() {
     this._getRecommend()
+    this._getDiscList()
   },
   methods: {
     _getRecommend() {
@@ -56,7 +66,14 @@ export default {
       }).catch(err => {
         console.log(err,1111)
       })
-    }
+    },
+    _getDiscList() {
+      getDiscList().then((res) => {
+        if (res.code === ERR_OK) {
+          this.discList = res.data.list
+        }
+      })
+    },
   }
 }
 
