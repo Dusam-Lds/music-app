@@ -7,7 +7,8 @@
         <slider>
             <div v-for="(item,index) in recommends" :key="index">
               <a :href="item.linkUrl">
-                <img class="needsclick" :src="item.picUrl">
+                <!-- needsclick 解決初始化時click：true | fastclick的點擊事件衝突 -->
+                <img  class="needsclick" :src="item.picUrl">
               </a>
             </div>
           </slider>
@@ -17,7 +18,7 @@
         <ul>
             <li @click="selectItem(item)" v-for="(item,index) in discList" :key="index" class="item">
               <div class="icon">
-                <img width="60" height="60" @load="loadImage" :src="item.imgurl">
+                <img width="60" height="60" @load="loadImage" v-lazy="item.imgurl">
               </div>
               <div class="text">
                 <h2 class="name" v-html="item.creator.name"></h2>
